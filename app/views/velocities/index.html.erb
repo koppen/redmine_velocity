@@ -1,0 +1,40 @@
+<h2>Velocity</h2>
+
+<%= image_tag "https://chart.googleapis.com/chart?cht=lc&chs=400x100&chds=a&chxt=y,x&chd=t:#{@version_story_points.reverse.join(',')}&chxl=1:|#{@recent_versions.reverse.collect(&:name).join('|')}", :alt => 'chart'%>
+
+<table>
+  <tr>
+    <th>Rolling average</th>
+    <td><%= @current_velocity %></td>
+  </tr>
+  <tr>
+    <th>Backlogged points</th>
+    <td><%= @backlogged_points %></td>
+  </tr>
+  <tr>
+    <th>Expected completion</th>
+    <td><%= pluralize((@backlogged_points / @current_velocity).ceil, 'iteration') %></td>
+  </tr>
+</table>
+
+<h3>Details</h3>
+<table>
+  <% @recent_versions.each do |version| %>
+    <tr>
+      <td>
+        <h3><%=h(version.name) %></h3>
+
+        <% if version.completed? %>
+          <p><%= format_date(version.effective_date) %></p>
+        <% elsif version.effective_date %>
+          <p><strong><%= due_date_distance_in_words(version.effective_date) %></strong> (<%= format_date(version.effective_date) %>)</p>
+        <% end %>
+
+        <p><%=h version.description %></p>
+      </td>
+      <td><%= custom_field_sum(version.fixed_issues, 'Story points') %></td>
+    </tr>
+  <% end %>
+</table>
+
+<%= @backlogged_points %>

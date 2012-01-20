@@ -1,0 +1,2 @@
+module VelocitiesHelper
+end
