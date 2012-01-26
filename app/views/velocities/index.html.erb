@@ -19,6 +19,18 @@
 
 <h3>Details</h3>
 <table>
+  <thead>
+    <tr>
+      <th rowspan="2">Iteration</th>
+      <th colspan="3">Effort</th>
+    </tr>
+    <tr>
+      <th>Total</th>
+      <th>Backlogged</th>
+      <th>Closed</th>
+    </tr>
+  </thead>
+
   <% @recent_versions.each do |version| %>
     <tr>
       <td>
@@ -33,6 +45,8 @@
         <p><%=h version.description %></p>
       </td>
       <td><%= custom_field_sum(version.fixed_issues, 'Story points') %></td>
+      <td><%= custom_field_sum(version.fixed_issues.reject(&:closed?), 'Story points') %></td>
+      <td><%= custom_field_sum(version.fixed_issues.select(&:closed?), 'Story points') %></td>
     </tr>
   <% end %>
 </table>

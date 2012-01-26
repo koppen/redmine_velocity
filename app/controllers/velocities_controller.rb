@@ -15,7 +15,7 @@ class VelocitiesController < ApplicationController
 
   def custom_field_sum(issues, custom_field_name = 'Story points')
     # TODO: Decorate Version instead
-    issues.collect { |issue|
+    custom_field_values = issues.collect { |issue|
       issue.custom_field_values.select { |cv|
         cv.custom_field.name.downcase == custom_field_name.downcase
       }
