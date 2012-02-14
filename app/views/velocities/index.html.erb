@@ -13,13 +13,19 @@
   </tr>
   <tr>
     <th>Expected completion</th>
-    <td><%= pluralize((@backlogged_points / @current_velocity).ceil, 'iteration') %></td>
+    <td>
+      <% if @current_velocity > 0 %>
+        <%= pluralize((@backlogged_points / @current_velocity).ceil, 'iteration') %>
+      <% else %>
+        ?
+      <% end %>
+    </td>
   </tr>
 </table>
 
 <h3>Details</h3>
 
-<table>
+<table class="list">
   <thead>
     <tr>
       <th rowspan="2">Iteration</th>
@@ -51,5 +57,3 @@
     </tr>
   <% end %>
 </table>
-
-<%= @backlogged_points %>

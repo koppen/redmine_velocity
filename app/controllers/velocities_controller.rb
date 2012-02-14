@@ -11,7 +11,7 @@ class VelocitiesController < ApplicationController
     )
     @current_version = @recent_versions.first
 
-    @version_story_points = @recent_versions.collect { |version| custom_field_sum(version.fixed_issues) }
+    @version_story_points = @recent_versions.collect { |version| custom_field_sum(version.fixed_issues.select(&:closed?)) }
     @current_velocity = average(@version_story_points).floor
 
     @backlogged_points = custom_field_sum(@project.issues.open)
