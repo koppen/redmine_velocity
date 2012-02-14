@@ -1,59 +1,66 @@
 <h2>Velocity</h2>
 
-<%= image_tag "https://chart.googleapis.com/chart?cht=lc&chs=400x100&chds=a&chxt=y,x&chd=t:#{@version_story_points.reverse.join(',')}&chxl=1:|#{@recent_versions.reverse.collect(&:name).join('|')}", :alt => 'chart'%>
+<div class="splitcontentleft">
+  <%= image_tag "https://chart.googleapis.com/chart?cht=lc&chs=400x100&chds=a&chxt=y,x&chd=t:#{@version_story_points.reverse.join(',')}&chxl=1:|#{@recent_versions.reverse.collect(&:name).join('|')}", :alt => 'chart'%>
+</div>
 
-<table>
-  <tr>
-    <th>Rolling average</th>
-    <td><%= @current_velocity %></td>
-  </tr>
-  <tr>
-    <th>Backlogged points</th>
-    <td><%= @backlogged_points %></td>
-  </tr>
-  <tr>
-    <th>Expected completion</th>
-    <td>
-      <% if @current_velocity > 0 %>
-        <%= pluralize((@backlogged_points / @current_velocity).ceil, 'iteration') %>
-      <% else %>
-        ?
-      <% end %>
-    </td>
-  </tr>
-</table>
+<div class="splitcontentright">
+  <table>
+    <tr>
+      <th>Rolling average</th>
+      <td><%= @current_velocity %></td>
+    </tr>
+    <tr>
+      <th>Backlogged points</th>
+      <td><%= @backlogged_points %></td>
+    </tr>
+    <tr>
+      <th>Expected completion</th>
+      <td>
+        <% if @backlogged_points > 0%>
+          <% if @current_velocity > 0 %>
+            <%= pluralize((@backlogged_points / @current_velocity).ceil, 'iteration') %>
+          <% else %>
+            ?
+          <% end %>
+        <% else %>
+          Done
+        <% end %>
+      </td>
+    </tr>
+  </table>
+</div>
 
-<h3>Details</h3>
+<div style="clear: both"></div>
 
 <table class="list">
   <thead>
     <tr>
-      <th rowspan="2">Iteration</th>
-      <th colspan="3">Effort</th>
-    </tr>
-    <tr>
+      <th>Iteration</th>
       <th>Total</th>
       <th>Backlogged</th>
       <th>Closed</th>
     </tr>
   </thead>
 
-  <% @recent_versions.each do |version| %>
-    <tr>
-      <td>
-        <h3><%=h(version.name) %></h3>
+  <tbody>
+    <% @recent_versions.each do |version| %>
+      <tr>
+        <td>
+          <h3><%=h(version.name) %></h3>
 
-        <% if version.completed? %>
-          <p><%= format_date(version.effective_date) %></p>
-        <% elsif version.effective_date %>
-          <p><strong><%= due_date_distance_in_words(version.effective_date) %></strong> (<%= format_date(version.effective_date) %>)</p>
-        <% end %>
+          <% if version.completed? %>
+            <p><%= format_date(version.effective_date) %></p>
+          <% elsif version.effective_date %>
+            <p><strong><%= due_date_distance_in_words(version.effective_date) %></strong> (<%= format_date(version.effective_date) %>)</p>
+          <% end %>
 
-        <p><%=h version.description %></p>
-      </td>
-      <td><%= custom_field_sum(version.fixed_issues, 'Story points') %></td>
-      <td><%= custom_field_sum(version.fixed_issues.reject(&:closed?), 'Story points') %></td>
-      <td><%= custom_field_sum(version.fixed_issues.select(&:closed?), 'Story points') %></td>
-    </tr>
-  <% end %>
+          <p><%=h version.description %></p>
+        </td>
+        <td><%= custom_field_sum(version.fixed_issues, 'Story points') %></td>
+        <td><%= custom_field_sum(version.fixed_issues.reject(&:closed?), 'Story points') %></td>
+        <td><%= custom_field_sum(version.fixed_issues.select(&:closed?), 'Story points') %></td>
+      </tr>
+    <% end %>
+  </tbody>
 </table>
