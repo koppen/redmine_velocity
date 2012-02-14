@@ -4,7 +4,11 @@ class VelocitiesController < ApplicationController
   def index
     @project = Project.find(params[:id])
 
-    @recent_versions = @project.versions.first(5)
+    @recent_versions = @project.versions.find(:all,
+      :conditions => ["effective_date <= ?", Time.now],
+      :order => 'effective_date DESC',
+      :limit => 5
+    )
     @current_version = @recent_versions.first
 
     @version_story_points = @recent_versions.collect { |version| custom_field_sum(version.fixed_issues) }
