@@ -1,3 +1,3 @@
-ActionController::Routing::Routes.draw do |map|
-  map.connect 'projects/:id/velocities', :controller => 'velocities', :action => 'index'
+RedmineApp::Application.routes.draw do
+  match 'projects/:id/velocities' => 'velocities#index'
 end
